@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentPass — Soulbound Attendance Badges for Agent ID Holders</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 0 16px 64px; max-width: 880px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+  header { padding: 28px 0 8px; }
+  h1 { margin: 0; font-size: 2rem; }
+  .sub { color: #666; margin: 4px 0 16px; }
+  .warn { background: #fff3cd; color: #5d3f00; border: 1px solid #e6c87a; border-radius: 8px; padding: 12px 14px; margin: 16px 0; }
+  .card { border: 1px solid #ccc; border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
+  .card h3 { margin: 0 0 6px; }
+  .meta { font-size: 0.9em; color: #666; }
+  .badge-ok { color: #0a7a2f; font-weight: 600; }
+  .badge-no { color: #a00; font-weight: 600; }
+  button { padding: 8px 14px; border-radius: 8px; border: 1px solid #888; background: #111; color: #fff; cursor: pointer; font-size: 1rem; }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.secondary { background: transparent; color: inherit; }
+  input, textarea { width: 100%; box-sizing: border-box; padding: 8px; margin: 4px 0 10px; border-radius: 6px; border: 1px solid #aaa; font-size: 1rem; }
+  label { font-weight: 600; font-size: 0.9em; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  #status { white-space: pre-wrap; font-size: 0.9em; color: #444; }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.8em; border: 1px solid #888; }
+  footer { margin-top: 32px; font-size: 0.85em; color: #666; }
+  code { background: rgba(127,127,127,.15); padding: 1px 5px; border-radius: 4px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+<script src="config.js"></script>
+</head>
+<body>
+<header>
+  <h1>AgentPass</h1>
+  <p class="sub">Soulbound attendance badges for Agent ID holders. Organizers create events; holders of an Agent ID claim one badge per event — free, gas only.</p>
+  <div class="warn"><strong>Please read:</strong> claiming requires an Agent ID. Claiming is free (gas only) and there are no promised returns. Every transaction must be reviewed and confirmed by you in your own wallet — AgentPass never asks for your seed phrase, private key, or pairing code, and never signs anything on your behalf.</div>
+  <div class="row">
+    <button id="connectBtn">Connect wallet</button>
+    <span id="accountInfo" class="meta">Not connected</span>
+    <span id="agentIdStatus"></span>
+  </div>
+  <p class="meta">Network: <span id="networkName"></span> · Contract: <code id="contractAddr"></code></p>
+</header>
+
+<section>
+  <h2>Events</h2>
+  <div id="events">Loading events…</div>
+</section>
+
+<section>
+  <h2>My badges</h2>
+  <div id="myBadges"><span class="meta">Connect your wallet to see your badges.</span></div>
+</section>
+
+<section>
+  <h2>Create an event</h2>
+  <p class="meta">Anyone holding an Agent ID can create an event. Badges are soulbound (non-transferable) and free to claim.</p>
+  <form id="createForm">
+    <label>Event name<input id="evName" required maxlength="120" placeholder="e.g. AgentPass Launch — Founding Agents"></label>
+    <label>Description<textarea id="evDesc" rows="2" maxlength="500" placeholder="What is this event about?"></textarea></label>
+    <div class="row">
+      <div style="flex:1"><label>Claim opens (local time)<input id="evStart" type="datetime-local" required></label></div>
+      <div style="flex:1"><label>Claim closes (local time)<input id="evEnd" type="datetime-local" required></label></div>
+    </div>
+    <label>Max badges<input id="evSupply" type="number" min="1" max="100000" value="100" required></label>
+    <label>Metadata URI (optional)<input id="evMeta" placeholder="ipfs://… or https://… (shared by all badges of this event)"></label>
+    <button type="submit">Create event</button>
+  </form>
+</section>
+
+<p id="status"></p>
+
+<footer>
+  <p>AgentPass is an independent community project built for the Agent ID Hackathon. Source code: <a href="https://github.com/Void201103/agentpass">github.com/Void201103/agentpass</a>. Agent ID registry: <code>0x60b9262456de011f7d15a54cdd8c48baaa8b022f</code> (BNB Chain). Badges are soulbound ERC-721 tokens — they cannot be transferred or sold.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
