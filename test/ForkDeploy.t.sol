@@ -20,7 +20,13 @@ contract ForkDeployTest is Test {
     bytes public initCode;
 
     function setUp() public {
-        vm.createSelectFork("https://bsc-dataseed.binance.org");
+        // Pin the fork to the block BEFORE the real mainnet deploy (block
+        // 134505093) so the expected CREATE2 address is still empty and the
+        // test simulates the deploy itself. Without the pin, the fork lands
+        // on latest mainnet where the contract already lives at EXPECTED.
+        // RPC must serve historical state at that block: the Binance dataseed
+        // nodes prune it (missing trie node); publicnode serves it.
+        vm.createSelectFork("https://bsc.publicnode.com", 134505092);
         bytes memory creation = vm.getCode("AgentPass.sol:AgentPass");
         initCode = abi.encodePacked(creation, abi.encode(REGISTRY, VOID, ""));
         // The init code must match the one computed offline (keccak pinned).
