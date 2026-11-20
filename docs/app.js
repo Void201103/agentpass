@@ -55,7 +55,7 @@ async function loadEvents() {
     box.innerHTML = "";
     const now = Math.floor(Date.now() / 1000);
     for (let id = total; id >= 1; id--) {
-      const ev = await readContract.getEvent(id);
+      const ev = await readContract.events(id);
       const card = document.createElement("div");
       card.className = "card";
       const state = now < Number(ev.startTime)
@@ -99,7 +99,7 @@ async function refreshClaimStates() {
     const btn = document.querySelector('button[data-event-id="' + id + '"]');
     const note = $("note-" + id);
     if (!btn || !note) continue;
-    const ev = await readContract.getEvent(id);
+    const ev = await readContract.events(id);
     const live = now >= Number(ev.startTime) && now <= Number(ev.endTime);
     const left = Number(ev.maxSupply) - Number(ev.minted);
     if (!account) {
@@ -213,7 +213,7 @@ async function loadMyBadges() {
       const owner = await readContract.ownerOf(tokenId);
       if (owner.toLowerCase() === account.toLowerCase()) {
         const eventId = Number(await readContract.tokenEvent(tokenId));
-        const ev = await readContract.getEvent(eventId);
+        const ev = await readContract.events(eventId);
         mine.push({ tokenId, eventId, name: ev.name });
       }
     }
